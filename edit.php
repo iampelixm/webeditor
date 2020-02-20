@@ -156,6 +156,7 @@
 <button onclick="addFile()">+file</button>
 
 <button onclick="$('#dropBox').show(200)">DropBox</button>
+<button onclick="updateEditor()">UPDATE</button>
 </div>
 <div id="editor"></div>
 
@@ -219,6 +220,16 @@
 
 <script>
 
+    function updateEditor()
+    {
+        if (confirm('Обновляемся?'))
+        {
+            $.get('update.php')
+            .fail(function(data){alert('oops. falied:'+data); console.log(data);})
+            .done(function(data){alert('Кажись обновились. Перезагрузи страницу'); console.log(data)});
+        }
+    }
+    
     function dropBox()
     {
         
