@@ -158,6 +158,26 @@ function moveFile()
 	);
 }
 
+function tarDir()
+{
+    var path=$('#path').val();
+    var tar='backup.tar';
+	$.post('tar.php', {'dir': path, 'tar': tar})
+	.fail(function(){alert('Баскуринг провален');})
+	.done(function(response)
+		{
+			if(response !== '')
+			{
+				alert(response);
+			}
+			else
+			{
+			    downloadFile(tar);
+			}
+		}
+	);
+}
+
 $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -176,7 +196,6 @@ $.fn.serializeObject = function() {
 
 function downloadFile(url)
 {
-    alert('download:'+url)
 	var link = document.createElement('a');
 	link.setAttribute('href', url);
 	link.setAttribute('download', url);

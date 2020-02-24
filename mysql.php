@@ -1,3 +1,6 @@
+<?php
+    require_once('functions.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,45 +15,25 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container">
-
-    <button class="btn btn-success" onclick="$('#tables').show(200)">TABLES</button>
-    <button class="btn btn-warning" onclick="$('#mysqlsettings').show(200)">MySQL SETTING</button>
-    <button class="btn btn-warning" onclick="$.get('mysql_dump_db.php','', function(data){downloadFile(data);})">DUMP DB</button>
+<div class="container pt-2 pb-2">
+    
+    <a class="btn btn-success btn-sm" href="edit.php">EDITOR</a>
+    <button class="btn btn-success btn-sm" onclick="$('#tables').show(200)">TABLES</button>
+    <button class="btn btn-warning btn-sm" onclick="$('#mysqlsettings').show(200)">MySQL SETTING</button>
+    <button class="btn btn-warning btn-sm" onclick="$.get('mysql_dump_db.php','', function(data){downloadFile(data);})">DUMP DB</button>
 
 </div>
 <?php
-    $mysql_settings=[];
-    if(file_exists('.mysql_settings'))
-    {
-        $mysqlset=file_get_contents('.mysql_settings');
-        $mysql_settings=explode("\n",$mysqlset);
-        /*
-        структура файла настроек:
-        хост
-        база данных
-        имя пользователя
-        пароль
-        */
-    }
-    $CONN='';
-
-    if(!empty($mysql_settings[0]))
-    {
-        $CONN=mysqli_connect($mysql_settings[0],$mysql_settings[2],$mysql_settings[3],$mysql_settings[1]);
-    }
-    else
-    {
-        echo "<BR><BR><BR>не заданы настройки мускуля";
-    }
+    $CONN=connectMySQL();
     
     if(!$CONN)
     {
+        $mysql_settings = getMySQLSettings();
         echo "<br><br><br>БЯДА, НЕ МОГУ ПОДКЛЮЧИТЬСЯ К МУСКУЛЮ<br>
-            host: ". $mysql_settings[0]."\n
-            DB: ". $mysql_settings[2]."\n
-            U: ". $mysql_settings[3]."\n
-            P: ". $mysql_settings[1]."\n
+            host: ". $mysql_settings[0]."<br>\n
+            DB: ". $mysql_settings[2]."<br>\n
+            U: ". $mysql_settings[3]."<br>\n
+            P: ". $mysql_settings[1]."<br>\n
             ".mysqli_connect_error();
     }
 ?>
@@ -94,7 +77,7 @@
 	            }
             ?>
 	    <?php else: ?>
-	        <h1>not cool</h1>
+	        <h1>Не подключен к БД</h1>
 	    <?php endif; ?>
 	</div>
 </div>

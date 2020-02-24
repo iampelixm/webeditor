@@ -1,3 +1,6 @@
+<?php
+    require_once('functions.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,19 +8,22 @@
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
 
 <link rel="stylesheet" href="style.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-<div class="header">
+<div class="container-fluid pt-2 pb-2">
 <?php
 	if(isset($_GET['file']))
 	{
 		echo $_GET['file'];
 	}
 ?>
-<button onclick="$('#files').show(200)">choose file</button>
+<button class="btn btn-primary btn-sm" onclick="$('#files').show(200)">choose file</button>
 
 <select name="path" id="path" style="width: 100px;">
     <option value="/">/</option>
@@ -28,108 +34,25 @@
 	    $c_dir=implode('/',$file_arr);
 	    $listed[]=$c_dir;
 	    echo '<option value="'.$c_dir.'" selected>'.$c_dir.'</option>'; 
-		function listdir($dir, $root, $sep='',$listed) 
-		{
-		    $rel_dir=substr($dir, strlen($root));
-		    
-		    if(!in_array($dir, $listed))
-		    {
-		        $listed[]=$dir;
-		        echo "<option value=\"".$rel_dir."/\">".$rel_dir."/</option>";
-		    }
-		    
-    		$list = scandir($dir);
-    		if (is_array($list)) 
-    		{
-        	    $list = array_diff($list, array('.', '..'));
-        		if ($list) 
-        		{
-					foreach ($list as $name) 
-        		    {
-						$path = $dir . '/' . $name;
-						$rel_path=substr($path, strlen($root));
-						$is_dir = is_dir($path);
-						if($is_dir)
-						{
-						    $listed[]=$path;
-						    echo "<option value=\"".$rel_path."/\">".$sep.$rel_path."/</option>";
-						}
-
-						if ($is_dir)
-						{
-							listdir($path, $root, $sep.'-',$listed);
-						}
-					}
-				}
-			}
-			else 
-			{
-				echo '<option>не могу прочитать</option>';
-			}
-		}
 		listdir($_SERVER['DOCUMENT_ROOT'].$c_dir, $_SERVER['DOCUMENT_ROOT'],'',$listed);
-		//listdir($_SERVER['DOCUMENT_ROOT'].'/editor', $_SERVER['DOCUMENT_ROOT'],'',$listed);
 		listdir($_SERVER['DOCUMENT_ROOT'].'', $_SERVER['DOCUMENT_ROOT'],'',$listed);
-//		listdir($_SERVER['DOCUMENT_ROOT'].'/service.player.bz', $_SERVER['DOCUMENT_ROOT'].'/','',$listed);
     ?>
 </select>
-<button onclick="moveFile()">-> MOVE</button>
+<button class="btn btn-success btn-sm" onclick="tarDir()">BACKUP DIR</button>
+<button class="btn btn-warning btn-sm" onclick="moveFile()">-> MOVE</button>
 <input type="text" name="filename" id="filename">
-<button onclick="addDir()">+dir</button>
-<button onclick="addFile()">+file</button>
+<button class="btn btn-primary btn-sm" onclick="addDir()">+dir</button>
+<button class="btn btn-primary btn-sm" onclick="addFile()">+file</button>
 
-<button onclick="$('#dropBox').show(200)">DropBox</button>
-<button onclick="updateEditor()">UPDATE</button>
-<a href="mysql.php">MySQL</a>
+<button class="btn btn-primary btn-sm" onclick="$('#dropBox').show(200)">DropBox</button>
+<button class="btn btn-info btn-sm" onclick="updateEditor()">UPDATE</button>
+<a class="btn btn-primary btn-sm" href="mysql.php">MySQL</a>
 </div>
 <div id="editor"></div>
 
 <div id="files" class="fileswindow" onclick="$(this).hide(200)">
 	<div class="filescontent" onclick="event.stopPropagation();">
 	<?php
-		function showdir($dir, $root, $showdir=1, $showfiles=1) {
-    		$list = scandir($dir);
-    		if (is_array($list)) {
-        	$list = array_diff($list, array('.', '..'));
-        		if ($list) {
-					echo '<ul>';
-					foreach ($list as $name) 
-        		    {
-						$path = $dir . '/' . $name;
-						$rel_path=substr($path, strlen($root));
-						$is_dir = is_dir($path);
-						echo '<li class="', $is_dir ? 'dir' : 'file', '">';
-						if($is_dir)
-						{
-						    if($showdir)
-						    {
-							    echo "<button onclick=$(event.target).next().toggle();>".htmlspecialchars($name)."</button>";
-						    }
-						}
-						else
-						{
-						    if($showfiles)
-						    {
-							    echo '<span><a href="edit.php?file='.$rel_path.'">'.htmlspecialchars($name).'</a></span>';
-						    }
-						}
-
-						if ($is_dir)
-						{
-						    echo '<div class="dircontent">';
-							showdir($path, $root, $showdir, $showfiles);
-							echo '</div>';
-						}
-						echo '</li>';
-					}
-					echo '</ul>';
-				}
-			}
-			else 
-			{
-				echo '<i>не могу прочитать</i>';
-			}
-		}
 		showdir($_SERVER['DOCUMENT_ROOT'].'/', $_SERVER['DOCUMENT_ROOT'].'/');	
 	?>
 	</div>
