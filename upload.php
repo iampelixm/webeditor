@@ -1,4 +1,7 @@
 <?php
+require_once('functions.php');
+?>
+<?php
 
 if (move_uploaded_file($_FILES['file']['tmp_name'], $_SERVER['DOCUMENT_ROOT'].'/'.$_POST['dir'].'/'.basename($_FILES['file']['name']))) {
     echo 'OK: '.$_SERVER['DOCUMENT_ROOT'].'/'.$_POST['dir'];

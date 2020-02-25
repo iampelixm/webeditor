@@ -1,4 +1,7 @@
 <?php
+require_once('functions.php');
+?>
+<?php
 header('Cache-Control: no-cache');
 if (file_exists($_SERVER['DOCUMENT_ROOT'].'/'.$_POST['file']))
 {

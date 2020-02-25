@@ -1,4 +1,7 @@
 <?php
+require_once('functions.php');
+?>
+<?php
 
 $table=$_POST['table'];
 $data=$_POST['data'];

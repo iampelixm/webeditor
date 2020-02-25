@@ -109,7 +109,7 @@ require_once('functions.php');
                 })
                 .done(function(response) {
                     if (response !== '') {
-                        alert(response);
+                        alert('RESP:'+response+'|');
                     }
                 }
                 );

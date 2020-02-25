@@ -1,3 +1,6 @@
+<?php
+require_once('functions.php');
+?>
 <?PHP
 
 $dir=$_POST['dir'];

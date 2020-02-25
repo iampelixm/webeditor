@@ -1,4 +1,31 @@
 <?PHP
+#AUTH HERE
+if(!empty($_COOKIE['PHPSESSID']))
+{
+    session_start();
+    if($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR'])
+    {
+        $_SESSION['AUTHED']=0;
+        session_destroy();
+        session_commit();
+        header('Location: login.php');
+        die('die');        
+    }
+    
+    if($_SESSION['AUTHED']!=1)
+    {
+        $_SESSION['AUTHED']=0;
+        session_destroy();
+        session_commit();
+        header('Location: login.php');
+        die('die');
+    }
+}
+else
+{
+    header('Location: login.php');
+    die('die'); 
+}
 
 function listdir($dir, $root, $sep = '', $listed) {
     $rel_dir = substr($dir, strlen($root));

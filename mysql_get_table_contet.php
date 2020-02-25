@@ -1,4 +1,7 @@
 <?php
+require_once('functions.php');
+?>
+<?php
 
 $mysql_settings=[];
 if(file_exists('.mysql_settings'))

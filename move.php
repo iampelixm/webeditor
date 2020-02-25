@@ -1,4 +1,7 @@
 <?php
+require_once('functions.php');
+?>
+<?php
 header('Cache-Control: no-cache');
 
 $file=$_POST['file'];

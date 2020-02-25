@@ -1,3 +1,6 @@
+<?php
+require_once('functions.php');
+?>
 <?php 
 header('Content-type: text/plain');
 header('Cache-Control: no-cache');
