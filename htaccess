@@ -1,0 +1,14 @@
+<Files ".mysql_settings"> 
+ order allow,deny 
+ deny from all 
+</Files>
+
+<Files ".shadow"> 
+ order allow,deny 
+ deny from all 
+</Files>
+
+<Files ".htaccess"> 
+ order allow,deny 
+ deny from all 
+</Files>
