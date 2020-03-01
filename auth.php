@@ -14,10 +14,10 @@ if(!empty($_POST['login']) && !empty($_POST['password']))
     
     $login=$_POST['login'];
     $pass=hash('sha512',$_POST['password']);
-    
+
     if($login === $s_pair[0])
     {
-        if($pass === $s_pair[1])
+        if($pass === trim($s_pair[1]))
         {
             session_destroy();
             session_commit();
