@@ -43,6 +43,7 @@ function listdir($dir, $root, $sep = '', $listed) {
                 $path = $dir . '/' . $name;
                 $rel_path = substr($path, strlen($root));
                 $is_dir = is_dir($path);
+                
                 if ($is_dir) {
                     $listed[] = $path;
                     echo "<option value=\"".$rel_path."/\">".$sep.$rel_path."/</option>";
@@ -59,24 +60,47 @@ function listdir($dir, $root, $sep = '', $listed) {
     }
 }
 
-function showdir($dir, $root, $showdir = 1, $showfiles = 1) {
-    $list = scandir($dir);
+function showdir($dir, $root, $showdir = 1, $showfiles = 1, $depth=1) {
+    $list = scandir($root.$dir);
     if (is_array($list)) {
         $list = array_diff($list, array('.', '..'));
         if ($list) {
+            
+            $root_level=sizeof(explode('/',$root));
+            $this_path_level=sizeof(explode('/',$root.$dir));
+            $to_level=$this_path_level+$depth;
+            $current_level=$this_path_level;
             echo '<ul style="list-style: none">';
             foreach ($list as $name) {
-                $path = $dir . '/' . $name;
+                $path = $root.$dir.'/'.$name;
                 $rel_path = substr($path, strlen($root));
                 $is_dir = is_dir($path);
-                echo '<li class="', $is_dir ? 'dir' : 'file', '">';
+                
                 if ($is_dir) {
                     if ($showdir) {
-                        echo "<button class=\"mt-1 btn btn-outline-primary\" onclick=\"$(event.target).next().toggle(300);\">".htmlspecialchars($name)."</button>";
+                        echo '<li class="', $is_dir ? 'dir' : 'file', '">';
+                        
+                        
+                        if ($current_level < $to_level) {
+                            echo "<button class=\"mt-1 btn btn-outline-primary\" onclick=\"$(event.target).next().toggle(300);\">".htmlspecialchars($name)."</button>";
+                            echo '<div class="dircontent">';
+                            showdir($rel_path, $root, $showdir, $showfiles,($depth-1));
+                            echo '</div>';
+                        }
+                        else
+                        {
+                            echo "<button class=\"mt-1 btn btn-outline-primary\" onclick=\"getDirContent('$rel_path', $(event.target).next()); $(event.target).next().toggle(300);\">".htmlspecialchars($name)."</button>";
+                            echo '<div class="dircontent">';
+                            echo 'loading dir content';
+                            echo '</div>';                            
+                        }
+                        echo '</li>';
                     }
-                } else
+                } 
+                else
                 {
                     if ($showfiles) {
+                        echo '<li class="', $is_dir ? 'dir' : 'file', '">';
                         echo '<div class="mt-1 border-bottom pb-1">
                         
                         <a class="btn btn-warning pt-0 pb-0" href="edit.php?file='.$rel_path.'">'.htmlspecialchars($name).'</a>
@@ -84,21 +108,17 @@ function showdir($dir, $root, $showdir = 1, $showfiles = 1) {
                         <a class="btn btn-info pt-0 pb-0" href="'.$rel_path.'" download="'.htmlspecialchars($name).'">скачать</a>
                         
                         </div>';
+                        echo '</li>';
                     }
                 }
-
-                if ($is_dir) {
-                    echo '<div class="dircontent">';
-                    showdir($path, $root, $showdir, $showfiles);
-                    echo '</div>';
-                }
-                echo '</li>';
             }
             echo '</ul>';
         }
     } else
     {
-        echo '<i>не могу прочитать</i>';
+        echo '<i>не могу прочитать</i>
+        <br> ROOT:'.$root.'
+        <br>DIR: '.$dir;
     }
 }
 
@@ -121,7 +141,7 @@ function getMySQLSettings() {
 function connectMySQL() {
     $mysql_settings = getMySQLSettings();
     if (!empty($mysql_settings[0])) {
-        return mysqli_connect($mysql_settings[0], $mysql_settings[2], $mysql_settings[3], $mysql_settings[1]);
+        return mysqli_connect('localhost', 'gov', 'gov', 'gov');
     }
     return '';
 }

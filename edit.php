@@ -56,7 +56,7 @@ require_once('functions.php');
     <div id="files" class="fileswindow" onclick="$(this).hide(200)">
         <div class="filescontent" onclick="event.stopPropagation();">
             <?php
-            showdir($_SERVER['DOCUMENT_ROOT'].'/', $_SERVER['DOCUMENT_ROOT'].'/');
+            showdir('', $_SERVER['DOCUMENT_ROOT'].'/');
             ?>
         </div>
     </div>
@@ -133,6 +133,18 @@ require_once('functions.php');
             }
         }
         );
+    }
+    
+    function getDirContent(path, container)
+    {
+        $(container).is(':hidden')
+        {
+            console.log('get content of', path, 'and place it to ', container);
+            $.post('getdircontent.php', {'dir':path}, function(data)
+                {
+                    $(container).html(data);
+                });
+        }
     }
     
     $(document).ready(function() {
